@@ -1,5 +1,7 @@
 package com.upgrad.quora.service;
 
+//new line added
+import org.springframework.beans.factory.annotation.Configurable;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
