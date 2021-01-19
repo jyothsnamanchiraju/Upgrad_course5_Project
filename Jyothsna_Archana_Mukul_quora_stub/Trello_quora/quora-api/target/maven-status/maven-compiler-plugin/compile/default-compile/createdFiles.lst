@@ -26,5 +26,6 @@ io\swagger\configuration\SwaggerDocumentationConfig.class
 com\upgrad\quora\api\model\AnswerRequest.class
 com\upgrad\quora\api\model\QuestionResponse.class
 com\upgrad\quora\api\config\SwaggerConfiguration.class
+com\upgrad\quora\api\controller\SignupController.class
 com\upgrad\quora\api\model\AnswerDeleteResponse.class
 com\upgrad\quora\api\model\QuestionDeleteResponse.class
