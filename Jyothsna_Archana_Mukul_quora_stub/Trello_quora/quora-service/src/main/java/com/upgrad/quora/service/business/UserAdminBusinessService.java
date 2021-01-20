@@ -1,9 +1,11 @@
 package com.upgrad.quora.service.business;
 
-import com.upgrad.quora.service.exception.AnswerNotFoundException;
+/*import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
-import com.upgrad.quora.service.exception.AuthorizationFailedException;
+import com.upgrad.quora.service.exception.AuthorizationFailedException;*/
+
+import com.upgrad.quora.service.exception.*;
 
 import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserEntity;
@@ -27,12 +29,21 @@ public class UserAdminBusinessService {
     private PasswordCryptographyProvider cryptographyProvider;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public UserEntity createUser(final UserEntity userEntity) {
+    public UserEntity createUser(final UserEntity userEntity) throws SignUpRestrictedException {
 
-        String password = userEntity.getPassword();
-     /*   if (password == null) {
-            userEntity.setPassword("quora@123");
-        }*/
+       //check if the user exists by same email-id and throw exception if needed
+        UserEntity checkUser = userDao.getUserByEmail(userEntity.getEmail());
+        if( checkUser != null) {
+            throw new SignUpRestrictedException("SGR-002", "This user has already been registered, try with any other emailId");
+        }
+
+        //check if the userName already exists and throw exception if needed
+        if(checkUser == null) {
+            checkUser = userDao.getUserByUserName(userEntity.getUserName());
+            if(checkUser != null)
+                throw new SignUpRestrictedException("SGR-001", "Try any other Username, this Username has already been taken");
+        }
+
         String[] encryptedText = cryptographyProvider.encrypt(userEntity.getPassword());
         userEntity.setSalt(encryptedText[0]);
         userEntity.setPassword(encryptedText[1]);
