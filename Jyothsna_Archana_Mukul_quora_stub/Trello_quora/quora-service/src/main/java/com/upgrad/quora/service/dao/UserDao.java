@@ -23,9 +23,9 @@ public class UserDao {
        }
     }
 
-    public UserEntity getUser(final String userUuid) {
+    public UserEntity getUserById(final Integer id) {
         try {
-            return entityManager.createNamedQuery("userByUuid", UserEntity.class).setParameter("uuid", userUuid)
+            return entityManager.createNamedQuery("userById", UserEntity.class).setParameter("id", id)
                     .getSingleResult();
         } catch (NoResultException nre) {
             return null;
@@ -55,6 +55,23 @@ public class UserDao {
        }catch (NoResultException nre){
            return null;
        }
-
    }
+
+    public UserAuthEntity getUserAuthByToken(final String accessToken) {
+        try {
+            return entityManager.createNamedQuery("userAuthByToken", UserAuthEntity.class).setParameter("accessToken", accessToken).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
+    public UserAuthEntity updateLogoutTime(final UserAuthEntity userAuth){
+        try {
+            entityManager.merge(userAuth);
+            return userAuth;
+        }catch (NoResultException nre){
+            return null;
+        }
+    }
+
 }

@@ -80,4 +80,27 @@ public class UserAdminBusinessService {
             throw new AuthenticationFailedException("ATH-002", "Password Failed");
         }
     }
+
+    /*
+     ** The signout() method is invoked by UserController for Signout funcionality.*
+     ** This method updates the user - logout time in the UserAuth table of the database.
+     */
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public UserEntity signout(final String accessToken) throws SignOutRestrictedException {
+        UserAuthEntity userAuth = userDao.getUserAuthByToken(accessToken);
+
+        if(userAuth == null || userAuth.getLogoutAt() != null){
+            throw new SignOutRestrictedException("SGR-001","User is not Signed in");
+        }
+
+        final ZonedDateTime now = ZonedDateTime.now();
+        userAuth.setLogoutAt(now);
+        userDao.updateLogoutTime(userAuth);
+
+        UserEntity user = userAuth.getUser();
+
+        return user;
+    }
+
 }
