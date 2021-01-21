@@ -128,7 +128,7 @@ public class UserEntity implements Serializable {
     }
 
     public void setUserName(String userName) {
-        this.username = username;
+        this.username = userName;
     }
 
     public String getEmail() {
