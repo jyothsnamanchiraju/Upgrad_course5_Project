@@ -15,8 +15,12 @@ public class UserDao {
     private EntityManager entityManager;
 
     public UserEntity createUser(UserEntity userEntity) {
-       entityManager.persist(userEntity);
-       return userEntity;
+       try {
+           entityManager.persist(userEntity);
+           return userEntity;
+       }catch (NoResultException nre){
+           return null;
+       }
     }
 
     public UserEntity getUser(final String userUuid) {
@@ -38,9 +42,19 @@ public class UserDao {
 
     public UserEntity getUserByUserName(final String userName) {
         try {
-            return entityManager.createNamedQuery("userByUserName", UserEntity.class).setParameter("userName", userName).getSingleResult();
+            return entityManager.createNamedQuery("userByUserName", UserEntity.class).setParameter("username", userName).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }
     }
+
+   public UserAuthEntity createUserAuth(final UserAuthEntity userAuth){
+       try {
+           entityManager.persist(userAuth);
+           return userAuth;
+       }catch (NoResultException nre){
+           return null;
+       }
+
+   }
 }
