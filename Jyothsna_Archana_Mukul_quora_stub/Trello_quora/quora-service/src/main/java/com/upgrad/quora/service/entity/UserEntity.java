@@ -20,7 +20,7 @@ import java.time.ZonedDateTime;
         {
                 @NamedQuery(name = "userByUuid", query = "select u from UserEntity u where u.uuid = :uuid"),
                 @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.email =:email"),
-                @NamedQuery(name = "userByUserName", query = "select u from UserEntity u where u.userName =:userName")
+                @NamedQuery(name = "userByUserName", query = "select u from UserEntity u where u.username =:username")
         }
 )
 
@@ -49,7 +49,7 @@ public class UserEntity implements Serializable {
     @Column(name = "username")
     @NotNull
     @Size(max = 30)
-    private String userName;
+    private String username;
 
 
     @Column(name = "email")
@@ -124,11 +124,11 @@ public class UserEntity implements Serializable {
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = username;
     }
 
     public String getEmail() {
