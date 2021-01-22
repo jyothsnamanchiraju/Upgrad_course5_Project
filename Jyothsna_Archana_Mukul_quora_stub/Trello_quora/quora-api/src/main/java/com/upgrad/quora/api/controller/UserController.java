@@ -88,7 +88,7 @@ public class UserController {
 
        HttpHeaders headers = new HttpHeaders();
        headers.add("access-token", userAuth.getAccessToken());
-       return new ResponseEntity<SigninResponse>( signinResponse, headers, HttpStatus.OK);
+       return new ResponseEntity<SigninResponse>(signinResponse, headers, HttpStatus.OK);
    }
 
    /*The below method is the Signout method.

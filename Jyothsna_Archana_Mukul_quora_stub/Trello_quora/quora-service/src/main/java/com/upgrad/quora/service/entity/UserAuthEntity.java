@@ -31,7 +31,7 @@ public class UserAuthEntity implements Serializable{
     @Size(max = 200)
     private String uuid;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

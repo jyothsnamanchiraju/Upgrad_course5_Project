@@ -33,7 +33,7 @@ public class QuestionEntity implements Serializable {
     @NotNull
     private ZonedDateTime qDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
