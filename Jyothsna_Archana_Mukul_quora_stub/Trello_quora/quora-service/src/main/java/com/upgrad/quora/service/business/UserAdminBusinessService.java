@@ -25,16 +25,16 @@ public class UserAdminBusinessService {
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity createUser(final UserEntity userEntity) throws SignUpRestrictedException {
 
-        //check if the user exists by same email-id and throw exception if needed
+       //check if the user exists by same email-id and throw exception if needed
         UserEntity checkUser = userDao.getUserByEmail(userEntity.getEmail());
-        if (checkUser != null) {
+        if( checkUser != null) {
             throw new SignUpRestrictedException("SGR-002", "This user has already been registered, try with any other emailId");
         }
 
         //check if the userName already exists and throw exception if needed
-        if (checkUser == null) {
+        if(checkUser == null) {
             checkUser = userDao.getUserByUserName(userEntity.getUserName());
-            if (checkUser != null)
+            if(checkUser != null)
                 throw new SignUpRestrictedException("SGR-001", "Try any other Username, this Username has already been taken");
         }
 
@@ -47,12 +47,11 @@ public class UserAdminBusinessService {
 
 
     /*
-     ** The Authenticate() method is invoked by UserController for Signin funcionality.*
-     ** This method records the user - login details in the UserAuth table of the database.
-     */
+    ** The Authenticate() method is invoked by UserController for Signin funcionality.*
+    ** This method records the user - login details in the UserAuth table of the database.
+    */
     @Autowired
     private PasswordCryptographyProvider cryptographyProvider;
-
     @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthEntity authenticate(final String username, final String password) throws AuthenticationFailedException {
 
@@ -91,8 +90,8 @@ public class UserAdminBusinessService {
     public UserEntity signout(final String accessToken) throws SignOutRestrictedException {
         UserAuthEntity userAuth = userDao.getUserAuthByToken(accessToken);
 
-        if (userAuth == null || userAuth.getLogoutAt() != null) {
-            throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
+        if(userAuth == null || userAuth.getLogoutAt() != null){
+            throw new SignOutRestrictedException("SGR-001","User is not Signed in");
         }
 
         final ZonedDateTime now = ZonedDateTime.now();
@@ -104,22 +103,4 @@ public class UserAdminBusinessService {
         return user;
     }
 
-
-    public boolean isUserSignedIn(UserAuthEntity userAuthTokenEntity) {
-        boolean isUserSignedIn = false;
-        if (userAuthTokenEntity != null && userAuthTokenEntity.getLoginAt() != null && userAuthTokenEntity.getExpiresAt() != null) {
-            if ((userAuthTokenEntity.getLogoutAt() == null)) {
-                isUserSignedIn = true;
-            }
-        }
-        return isUserSignedIn;
-    }
-
-    public boolean isUserAdmin(UserEntity user) {
-        boolean isUserAdmin = false;
-        if (user != null && "admin".equals(user.getRole())) {
-            isUserAdmin = true;
-        }
-        return isUserAdmin;
-    }
 }

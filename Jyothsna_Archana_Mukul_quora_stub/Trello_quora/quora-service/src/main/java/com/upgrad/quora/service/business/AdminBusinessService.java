@@ -2,6 +2,7 @@ package com.upgrad.quora.service.business;
 
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
+import javax.persistence.NoResultException;
 
 import com.upgrad.quora.service.dao.AdminDao;
 import com.upgrad.quora.service.dao.UserDao;
@@ -26,7 +27,7 @@ public class AdminBusinessService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity deleteUser(final String userUuid, final String accessToken)
-            throws Exception {
+            throws AuthorizationFailedException, UserNotFoundException,NoResultException {
 
         UserAuthEntity userAuth = userDao.getUserAuthByToken(accessToken);
 
@@ -50,7 +51,12 @@ public class AdminBusinessService {
         //delete the user records from all the files where the User-UUID exists.
         //return the User-uuid.
         //String UUID =
-                adminDao.deleteUser(delUser);
+        try {
+            adminDao.deleteUser(delUser);
+        }catch(Exception e){
+            System.err.println(e);
+        }
+
 
         return delUser;
     }

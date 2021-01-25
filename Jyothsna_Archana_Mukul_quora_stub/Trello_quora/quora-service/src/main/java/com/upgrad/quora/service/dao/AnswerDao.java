@@ -1,13 +1,15 @@
 package com.upgrad.quora.service.dao;
 
-import com.upgrad.quora.service.entity.AnswerEntity;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
+        import com.upgrad.quora.service.entity.AnswerEntity;
+        import javax.persistence.EntityManager;
+        import javax.persistence.NoResultException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+        import com.upgrad.quora.service.entity.QuestionEntity;
+        import com.upgrad.quora.service.entity.UserAuthEntity;
+        import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.stereotype.Repository;
 
-import java.util.List;
+        import java.util.List;
 
 @Repository
 public class AnswerDao {
@@ -17,11 +19,57 @@ public class AnswerDao {
     public AnswerDao() {
     }
 
-    public AnswerEntity createAnswer(AnswerEntity answerEntity) {
-        this.entityManager.persist(answerEntity);
-        return answerEntity;
+    public AnswerEntity createAnswer(AnswerEntity answer) {
+        try {
+            this.entityManager.persist(answer);
+            return answer;
+        }catch (NoResultException nre){
+            return null;
+        }
     }
 
+    public AnswerEntity getAnswerById(final String ansUuid) {
+        try {
+            return entityManager.createNamedQuery("getAnswerById", AnswerEntity.class)
+                    .setParameter("uuid", ansUuid)
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
+    public UserAuthEntity getUserAuthByToken(final String accessToken) {
+        try {
+            return entityManager.createNamedQuery("userAuthByToken", UserAuthEntity.class).setParameter("accessToken", accessToken).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
+    public AnswerEntity editAnswer(AnswerEntity answer) {
+        try {
+            return entityManager.merge(answer);
+        }catch (NoResultException nre) {
+            return null;
+        }
+    }
+
+    public void deleteAnswer(AnswerEntity answerEntity) {
+        try {
+            entityManager.remove(answerEntity);
+        }catch(NoResultException nre){
+            System.err.println(nre);
+        }
+    }
+
+    public List<AnswerEntity> getAllAnswers(QuestionEntity question) {
+        try {
+            return this.entityManager.createNamedQuery("getAllAnsForQues", AnswerEntity.class).setParameter("question",question).getResultList();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+    /*
     public AnswerEntity editAnswerContent(AnswerEntity answerEntity) {
         return entityManager.merge(answerEntity);
     }
@@ -60,5 +108,5 @@ public class AnswerDao {
         } catch (NoResultException nre) {
             return null;
         }
-    }
+    }*/
 }

@@ -2,11 +2,14 @@ package com.upgrad.quora.service.dao;
 
 import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserEntity;
+import com.upgrad.quora.service.entity.UserAuthEntity;
+
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
+import javax.transaction.Transactional;
+
 import java.util.List;
 
 @Repository
@@ -15,15 +18,23 @@ public class QuestionDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public QuestionEntity createQuestion(QuestionEntity question) {
 
-    public QuestionEntity createQuestion(QuestionEntity questionEntity) {
         try {
-            entityManager.persist(questionEntity);
-            return questionEntity;
-        } catch (Exception e) {
+            entityManager.persist(question);
+            return question;
+        } catch (NoResultException nre) {
             return null;
         }
     }
+
+        public UserAuthEntity getUserAuthByToken(final String accessToken) {
+            try {
+                return entityManager.createNamedQuery("userAuthByToken", UserAuthEntity.class).setParameter("accessToken", accessToken).getSingleResult();
+            } catch (NoResultException nre) {
+                return null;
+            }
+        }
 
     public List<QuestionEntity> getAllQuestions() {
         try {
@@ -33,49 +44,56 @@ public class QuestionDao {
         }
     }
 
-    public QuestionEntity getQuestionById(final String id) {
+
+    public void editQuestion(QuestionEntity question) {
+        try {
+            entityManager.merge(question);
+
+        }catch (NoResultException nre){
+            System.err.println(nre);
+        }
+    }
+
+    public QuestionEntity getQuestionById(final String QuesUuid) {
         try {
             return entityManager.createNamedQuery("getQuestionById", QuestionEntity.class)
-                    .setParameter("uuid", id)
+                    .setParameter("uuid", QuesUuid)
                     .getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }
     }
 
-    public void editQuestion(String uuid, String content) {
+    public void deleteQuestion(QuestionEntity question) {
         try {
-            entityManager.createNamedQuery("editQuestionById")
-                    .setParameter("uuid", uuid)
-                    .setParameter("content", content)
-                    .executeUpdate();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+            entityManager.remove(question);
+
+        }catch (NoResultException nre){
+            System.err.println(nre);
         }
     }
 
-    public void deleteQuestion(String uuid) {
-        try {
-            entityManager.createNamedQuery("deleteQuestionById")
-                    .setParameter("uuid", uuid)
-                    .executeUpdate();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
-    public List<QuestionEntity> getAllQuestionsByUser(final UserEntity id) {
+    public List<QuestionEntity> getAllQuestionsByUser(UserEntity user) {
         try {
             List questionsList = entityManager.createNamedQuery("getAllQuestionsByUser")
-                    .setParameter("userId", id)
+                    .setParameter("user", user)
                     .getResultList();
-
-            System.out.println(questionsList.size());
-
             return questionsList;
         } catch (NoResultException e) {
             System.out.println(e.getMessage());
             return null;
         }
     }
+
+
+    public UserEntity getUserByUuId(final String uuid) {
+        try {
+            return entityManager.createNamedQuery("userByUuid", UserEntity.class).setParameter("uuid", uuid)
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
 }
