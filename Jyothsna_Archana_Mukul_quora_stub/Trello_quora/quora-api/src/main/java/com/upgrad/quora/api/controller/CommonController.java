@@ -30,14 +30,14 @@ public class CommonController {
         UserEntity  user = commonBusinessService.getUserProfile(userUuid, authorization);
 
         UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
-        userDetailsResponse.setFirstName(user.getFirstName());
-        userDetailsResponse.setLastName(user.getLastName());
-        userDetailsResponse.setUserName(user.getUserName());
-        userDetailsResponse.setEmailAddress(user.getEmail());
-        userDetailsResponse.setCountry(user.getCountry());
-        userDetailsResponse.setAboutMe(user.getAboutMe());
-        userDetailsResponse.setDob(user.getDob());
-        userDetailsResponse.setContactNumber(user.getContactNumber());
+            userDetailsResponse.setFirstName(user.getFirstName());
+            userDetailsResponse.setLastName(user.getLastName());
+            userDetailsResponse.setUserName(user.getUserName());
+            userDetailsResponse.setEmailAddress(user.getEmail());
+            userDetailsResponse.setCountry(user.getCountry());
+            userDetailsResponse.setAboutMe(user.getAboutMe());
+            userDetailsResponse.setDob(user.getDob());
+            userDetailsResponse.setContactNumber(user.getContactNumber());
 
         return new ResponseEntity<UserDetailsResponse>(userDetailsResponse, HttpStatus.OK);
 
